@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSVP Speed Reader Explorer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Rapid Serial Visual Presentation (RSVP) Explorer</h1>
+      <p class="lede">
+        Paste text, set words-per-minute, and read one word at a time with a fixed visual anchor.
+      </p>
+
+      <section class="controls card">
+        <label for="textInput">Input text</label>
+        <textarea id="textInput" rows="6" placeholder="Paste text here...">Rapid Serial Visual Presentation displays words one by one in the same location. This can reduce eye movement and support faster reading by keeping your gaze fixed near the center of the screen.</textarea>
+
+        <div class="row">
+          <label for="wpmInput">Words per minute</label>
+          <input id="wpmInput" type="number" min="60" max="1200" value="300" />
+        </div>
+
+        <div class="row">
+          <label for="pivotToggle">Highlight ORP pivot character</label>
+          <input id="pivotToggle" type="checkbox" checked />
+        </div>
+
+        <div class="buttons">
+          <button id="startBtn">Start</button>
+          <button id="pauseBtn">Pause</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+      </section>
+
+      <section class="reader card" aria-live="polite">
+        <div class="reticle" aria-hidden="true"></div>
+        <div id="wordDisplay" class="word">Ready</div>
+        <div id="progress" class="progress">0 / 0</div>
+      </section>
+
+      <section class="card">
+        <h2>Interactive ORP anchor explainer</h2>
+        <p>
+          RSVP tools often use an <strong>Optimal Recognition Point (ORP)</strong>: a character near the start-middle
+          of each word that is aligned to the same position each frame. Toggle examples to see why a fixed pivot
+          helps reduce eye travel.
+        </p>
+        <div class="row">
+          <label for="exampleWord">Example word</label>
+          <input id="exampleWord" type="text" value="attention" />
+        </div>
+        <div class="row">
+          <label for="exampleIndex">Pivot index</label>
+          <input id="exampleIndex" type="range" min="0" max="8" value="3" />
+          <span id="exampleIndexLabel">3</span>
+        </div>
+        <div class="example-box">
+          <div class="reticle" aria-hidden="true"></div>
+          <div id="exampleDisplay" class="word"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

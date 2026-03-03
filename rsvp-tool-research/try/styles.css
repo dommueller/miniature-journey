@@ -1,0 +1,119 @@
+:root {
+  color-scheme: light dark;
+  --bg: #0f172a;
+  --card: #111827;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #f43f5e;
+  --line: #334155;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: linear-gradient(180deg, #020617, #0f172a);
+  color: var(--text);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+h1,
+h2 {
+  margin: 0;
+}
+
+.lede {
+  margin: 0;
+  color: var(--muted);
+}
+
+.card {
+  background: color-mix(in oklab, var(--card), black 12%);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.controls textarea,
+.controls input[type='number'],
+.controls input[type='text'],
+input[type='text'] {
+  width: 100%;
+}
+
+textarea,
+input,
+button {
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #0b1220;
+  color: var(--text);
+  padding: 10px;
+}
+
+.row {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.row > label {
+  min-width: 170px;
+}
+
+.buttons {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.reader,
+.example-box {
+  position: relative;
+  min-height: 140px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.reticle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 84px;
+  background: color-mix(in oklab, var(--muted), transparent 40%);
+}
+
+.word {
+  font-size: clamp(2rem, 8vw, 3.2rem);
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  font-variant-ligatures: none;
+}
+
+.pivot {
+  color: var(--accent);
+}
+
+.progress {
+  margin-top: 8px;
+  color: var(--muted);
+}
