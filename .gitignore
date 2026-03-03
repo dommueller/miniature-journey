@@ -78,8 +78,6 @@ lerna-debug.log*
 dist-ssr
 
 # Build outputs
-dist/
-build/
 out/
 *.min.js
 *.min.css
