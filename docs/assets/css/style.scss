@@ -1,0 +1,21 @@
+---
+---
+
+@import "minima";
+
+.subproject-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.subproject-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fafafa;
+}
+
+.subproject-card h3 {
+  margin-top: 0;
+}
