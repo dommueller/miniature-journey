@@ -1,7 +1,7 @@
 title: Miniature Journey Blog
 description: Experiments, progress logs, and runnable demos from each subproject.
 baseurl: ""
-url: "https://<your-org-or-user>.github.io/miniature-journey"
+url: "https://dommueller.github.io/miniature-journey"
 markdown: kramdown
 theme: minima
 plugins:
