@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSVP Speed Reader Explorer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Rapid Serial Visual Presentation (RSVP) Explorer</h1>
+      <p class="lede">
+        Paste text, set words-per-minute, and read one word at a time with a fixed visual anchor.
+      </p>
+
+      <section class="controls card">
+        <label for="textInput">Input text</label>
+        <textarea id="textInput" rows="6" placeholder="Paste text here...">Rapid Serial Visual Presentation displays words one by one in the same location. This can reduce eye movement and support faster reading by keeping your gaze fixed near the center of the screen.</textarea>
+
+        <div class="row">
+          <label for="wpmInput">Words per minute</label>
+          <input id="wpmInput" type="number" min="60" max="1200" value="300" />
+        </div>
+
+        <div class="row">
+          <label for="pivotToggle">Highlight ORP pivot character</label>
+          <input id="pivotToggle" type="checkbox" checked />
+        </div>
+
+        <div class="buttons">
+          <button id="startBtn">Start</button>
+          <button id="pauseBtn">Pause</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+      </section>
+
+      <section class="reader card" aria-live="polite">
+        <div class="reticle" aria-hidden="true"></div>
+        <div id="wordDisplay" class="word">Ready</div>
+        <div id="progress" class="progress">0 / 0</div>
+      </section>
+
+      <section class="card">
+        <h2>Interactive ORP anchor explainer</h2>
+        <p>
+          This demo rolls a short fixed text stream. Choose how the anchor is selected, then observe how the whole
+          word shifts while the chosen anchor stays locked to the reticle.
+        </p>
+        <div class="row">
+          <label for="exampleMode">Anchor mode</label>
+          <select id="exampleMode">
+            <option value="fixed">Fixed index</option>
+            <option value="relative">Relative position</option>
+          </select>
+        </div>
+        <div class="row" id="fixedRow">
+          <label for="exampleIndex">Fixed index</label>
+          <input id="exampleIndex" type="range" min="0" max="6" value="2" />
+          <span id="exampleIndexLabel">2</span>
+        </div>
+        <div class="row" id="relativeRow">
+          <label for="exampleRelative">Relative anchor (0.0 - 1.0)</label>
+          <input id="exampleRelative" type="range" min="0" max="1" step="0.1" value="0.3" />
+          <span id="exampleRelativeLabel">0.3</span>
+        </div>
+        <div class="example-box" aria-live="polite">
+          <div class="reticle" aria-hidden="true"></div>
+          <div id="exampleDisplay" class="word"></div>
+        </div>
+        <div id="exampleWordInfo" class="progress"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
