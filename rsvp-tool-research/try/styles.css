@@ -87,8 +87,6 @@ button {
 .example-box {
   position: relative;
   min-height: 140px;
-  display: grid;
-  place-items: center;
   overflow: hidden;
 }
 
@@ -103,9 +101,16 @@ button {
 }
 
 .word {
+  --pivot-index: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(calc((-1ch * var(--pivot-index)) - 0.5ch), -50%);
   font-size: clamp(2rem, 8vw, 3.2rem);
-  letter-spacing: 0.02em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0;
   font-weight: 600;
+  white-space: pre;
   font-variant-ligatures: none;
 }
 

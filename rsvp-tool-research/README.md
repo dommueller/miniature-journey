@@ -9,7 +9,7 @@ Original prompt:
 A browser-based RSVP tool in this folder:
 
 - `try/index.html`: Pages-compatible entrypoint for the interactive demo.
-- `try/script.js`: tokenization, RSVP playback scheduling, ORP pivot calculation/highlighting, and explainer logic.
+- `try/script.js`: tokenization, RSVP playback scheduling, fixed-anchor alignment logic, ORP pivot calculation/highlighting, and explainer logic.
 - `try/styles.css`: dark UI, fixed reticle line, large central word display.
 - `try/entry.yml`: metadata consumed by the subproject index generator.
 
@@ -46,13 +46,13 @@ This is not a universal scientific law; it is a practical implementation heurist
 - Pauses for punctuation and sentence boundaries can improve comprehension (not implemented yet, but a useful enhancement).
 
 ## Interactive explanation included
-The demo includes an “Interactive ORP anchor explainer” section where users:
+The demo includes an interactive fixed-text rolling explainer:
 
-- type any example word,
-- move a pivot-index slider,
-- observe the highlighted character while a fixed reticle stays centered.
+- a short phrase rotates automatically word-by-word,
+- users move an anchor-index slider,
+- each word re-aligns so that the selected character index stays on the same reticle position.
 
-This shows how keeping one anchor location can reduce eye travel even as word length changes.
+This makes the alignment effect obvious: changing the anchor index shifts where each word "locks" visually, which changes perceived stability and eye effort.
 
 ## How to run locally
 

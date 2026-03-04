@@ -7,14 +7,28 @@ const resetBtn = document.getElementById('resetBtn');
 const wordDisplay = document.getElementById('wordDisplay');
 const progress = document.getElementById('progress');
 
-const exampleWord = document.getElementById('exampleWord');
 const exampleIndex = document.getElementById('exampleIndex');
 const exampleIndexLabel = document.getElementById('exampleIndexLabel');
 const exampleDisplay = document.getElementById('exampleDisplay');
+const exampleWordInfo = document.getElementById('exampleWordInfo');
+
+const exampleWords = [
+  'Anchor',
+  'position',
+  'changes',
+  'perception',
+  'because',
+  'your',
+  'eyes',
+  'track',
+  'less',
+];
 
 let words = [];
 let current = 0;
 let timer = null;
+let exampleCurrent = 0;
+let exampleTimer = null;
 
 function tokenize(text) {
   return text
@@ -24,8 +38,16 @@ function tokenize(text) {
     .filter(Boolean);
 }
 
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function getPivotIndex(word) {
-  // Common RSVP heuristic based on Spritz-style ORP positioning.
   const length = word.length;
   if (length <= 1) return 0;
   if (length <= 5) return 1;
@@ -34,32 +56,40 @@ function getPivotIndex(word) {
   return 4;
 }
 
-function renderWord(word, forcePivotIndex = null) {
-  if (!pivotToggle.checked) {
-    return word;
-  }
-
-  const safe = word.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function renderWord(word, forcedIndex = null) {
+  const safe = escapeHtml(word);
   const pivot = Math.min(
-    Math.max(0, forcePivotIndex ?? getPivotIndex(safe)),
-    safe.length - 1,
+    Math.max(0, forcedIndex ?? getPivotIndex(word)),
+    Math.max(0, safe.length - 1),
   );
+
   const left = safe.slice(0, pivot);
   const mid = safe[pivot] ?? '';
   const right = safe.slice(pivot + 1);
-  return `${left}<span class="pivot">${mid}</span>${right}`;
+
+  const html = pivotToggle.checked
+    ? `${left}<span class="pivot">${mid}</span>${right}`
+    : `${left}${mid}${right}`;
+
+  return { html, pivot };
+}
+
+function setAlignedWord(element, word, forcedIndex = null) {
+  const { html, pivot } = renderWord(word, forcedIndex);
+  element.style.setProperty('--pivot-index', String(pivot));
+  element.innerHTML = html;
 }
 
 function updateDisplay() {
   const word = words[current] ?? 'Done';
-  wordDisplay.innerHTML = renderWord(word);
+  setAlignedWord(wordDisplay, word);
   progress.textContent = `${Math.min(current + 1, words.length)} / ${words.length}`;
 }
 
 function tick() {
   if (current >= words.length) {
     stop();
-    wordDisplay.textContent = 'Done';
+    setAlignedWord(wordDisplay, 'Done', 1);
     return;
   }
 
@@ -77,7 +107,7 @@ function start() {
   }
 
   if (!words.length) {
-    wordDisplay.textContent = 'Add text first';
+    setAlignedWord(wordDisplay, 'Add text first', 2);
     return;
   }
 
@@ -98,17 +128,29 @@ function reset() {
   stop();
   current = 0;
   words = tokenize(textInput.value);
-  wordDisplay.textContent = 'Ready';
+  setAlignedWord(wordDisplay, 'Ready', 1);
   progress.textContent = `0 / ${words.length}`;
 }
 
 function updateExample() {
-  const word = (exampleWord.value || 'focus').trim();
-  exampleIndex.max = String(Math.max(0, word.length - 1));
-  const idx = Math.min(Number(exampleIndex.value) || 0, word.length - 1);
-  exampleIndex.value = String(Math.max(0, idx));
-  exampleIndexLabel.textContent = exampleIndex.value;
-  exampleDisplay.innerHTML = renderWord(word, Number(exampleIndex.value));
+  const idx = Number(exampleIndex.value) || 0;
+  exampleIndexLabel.textContent = String(idx);
+
+  const word = exampleWords[exampleCurrent % exampleWords.length];
+  const clamped = Math.min(idx, Math.max(0, word.length - 1));
+  setAlignedWord(exampleDisplay, word, clamped);
+  exampleWordInfo.textContent = `Word: ${word} | Anchor index: ${clamped}`;
+}
+
+function tickExample() {
+  exampleCurrent += 1;
+  updateExample();
+}
+
+function startExample() {
+  if (exampleTimer) return;
+  updateExample();
+  exampleTimer = setInterval(tickExample, 520);
 }
 
 startBtn.addEventListener('click', start);
@@ -119,8 +161,8 @@ pivotToggle.addEventListener('change', () => {
   updateExample();
 });
 
-exampleWord.addEventListener('input', updateExample);
 exampleIndex.addEventListener('input', updateExample);
 
 reset();
+startExample();
 updateExample();

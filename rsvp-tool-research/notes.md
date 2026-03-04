@@ -24,3 +24,7 @@
   - Removed duplicated web app files at `rsvp-tool-research/index.html`, `script.js`, and `styles.css`.
   - Kept a single canonical runnable implementation in `rsvp-tool-research/try/`.
   - Clarified README to state that `try/` is the only demo code location and root contains docs only.
+- UX correction pass for anchor behavior:
+  - Implemented true fixed-anchor alignment in renderer by offsetting each word using its pivot index in monospace `ch` units.
+  - Updated explainer to a rolling fixed phrase where changing anchor index re-locks the stream to that index.
+  - Removed previous single-word explainer approach since it did not clearly demonstrate anchor-shift perception.

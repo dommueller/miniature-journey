@@ -43,23 +43,19 @@
       <section class="card">
         <h2>Interactive ORP anchor explainer</h2>
         <p>
-          RSVP tools often use an <strong>Optimal Recognition Point (ORP)</strong>: a character near the start-middle
-          of each word that is aligned to the same position each frame. Toggle examples to see why a fixed pivot
-          helps reduce eye travel.
+          This demo rolls a short fixed text stream. Move the anchor index to align a different character to the
+          reticle and observe how the whole word shifts around that fixed point.
         </p>
         <div class="row">
-          <label for="exampleWord">Example word</label>
-          <input id="exampleWord" type="text" value="attention" />
+          <label for="exampleIndex">Anchor index</label>
+          <input id="exampleIndex" type="range" min="0" max="6" value="2" />
+          <span id="exampleIndexLabel">2</span>
         </div>
-        <div class="row">
-          <label for="exampleIndex">Pivot index</label>
-          <input id="exampleIndex" type="range" min="0" max="8" value="3" />
-          <span id="exampleIndexLabel">3</span>
-        </div>
-        <div class="example-box">
+        <div class="example-box" aria-live="polite">
           <div class="reticle" aria-hidden="true"></div>
           <div id="exampleDisplay" class="word"></div>
         </div>
+        <div id="exampleWordInfo" class="progress"></div>
       </section>
     </main>
 
