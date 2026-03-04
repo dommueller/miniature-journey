@@ -32,3 +32,4 @@
   - New mode selector: fixed index vs relative index.
   - Relative mode uses a 0.0-1.0 slider with step 0.1, mapping to word length.
   - Fixed mode continues to use explicit character index, clamped by current word length.
+- Minor UI copy cleanup: removed the fractional/decimal anchor tip text from the explainer to keep the interface less redundant.
