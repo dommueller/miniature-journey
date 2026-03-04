@@ -1,0 +1,11 @@
+{
+  "name": "zig-wasm-showcase",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:wasm": "zig build wasm",
+    "build:try": "zig build wasm-try && cp zig-out/try/demo.wasm try/demo.wasm",
+    "serve": "bun --hot web/server.js",
+    "serve:try": "bun --hot web/server.js"
+  }
+}
