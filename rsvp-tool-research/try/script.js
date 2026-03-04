@@ -7,22 +7,17 @@ const resetBtn = document.getElementById('resetBtn');
 const wordDisplay = document.getElementById('wordDisplay');
 const progress = document.getElementById('progress');
 
+const exampleMode = document.getElementById('exampleMode');
+const fixedRow = document.getElementById('fixedRow');
+const relativeRow = document.getElementById('relativeRow');
 const exampleIndex = document.getElementById('exampleIndex');
 const exampleIndexLabel = document.getElementById('exampleIndexLabel');
+const exampleRelative = document.getElementById('exampleRelative');
+const exampleRelativeLabel = document.getElementById('exampleRelativeLabel');
 const exampleDisplay = document.getElementById('exampleDisplay');
 const exampleWordInfo = document.getElementById('exampleWordInfo');
 
-const exampleWords = [
-  'Anchor',
-  'position',
-  'changes',
-  'perception',
-  'because',
-  'your',
-  'eyes',
-  'track',
-  'less',
-];
+const exampleWords = ['Anchor', 'position', 'changes', 'perception', 'because', 'your', 'eyes', 'track', 'less'];
 
 let words = [];
 let current = 0;
@@ -58,10 +53,7 @@ function getPivotIndex(word) {
 
 function renderWord(word, forcedIndex = null) {
   const safe = escapeHtml(word);
-  const pivot = Math.min(
-    Math.max(0, forcedIndex ?? getPivotIndex(word)),
-    Math.max(0, safe.length - 1),
-  );
+  const pivot = Math.min(Math.max(0, forcedIndex ?? getPivotIndex(word)), Math.max(0, safe.length - 1));
 
   const left = safe.slice(0, pivot);
   const mid = safe[pivot] ?? '';
@@ -132,14 +124,42 @@ function reset() {
   progress.textContent = `0 / ${words.length}`;
 }
 
-function updateExample() {
-  const idx = Number(exampleIndex.value) || 0;
-  exampleIndexLabel.textContent = String(idx);
+function getExampleAnchor(word) {
+  const maxIndex = Math.max(0, word.length - 1);
 
+  if (exampleMode.value === 'relative') {
+    const ratio = Number(exampleRelative.value) || 0;
+    const idx = Math.round(maxIndex * ratio);
+    return {
+      index: idx,
+      detail: `mode: relative (${ratio.toFixed(1)} of word)`
+    };
+  }
+
+  exampleIndex.max = String(maxIndex);
+  const fixed = Math.min(Number(exampleIndex.value) || 0, maxIndex);
+  exampleIndex.value = String(fixed);
+  return {
+    index: fixed,
+    detail: 'mode: fixed index'
+  };
+}
+
+function updateExplainerModeUI() {
+  const isRelative = exampleMode.value === 'relative';
+  fixedRow.style.display = isRelative ? 'none' : 'flex';
+  relativeRow.style.display = isRelative ? 'flex' : 'none';
+}
+
+function updateExample() {
   const word = exampleWords[exampleCurrent % exampleWords.length];
-  const clamped = Math.min(idx, Math.max(0, word.length - 1));
-  setAlignedWord(exampleDisplay, word, clamped);
-  exampleWordInfo.textContent = `Word: ${word} | Anchor index: ${clamped}`;
+  const { index, detail } = getExampleAnchor(word);
+
+  exampleIndexLabel.textContent = exampleIndex.value;
+  exampleRelativeLabel.textContent = Number(exampleRelative.value).toFixed(1);
+
+  setAlignedWord(exampleDisplay, word, index);
+  exampleWordInfo.textContent = `Word: ${word} | Anchor index: ${index} | ${detail}`;
 }
 
 function tickExample() {
@@ -161,8 +181,15 @@ pivotToggle.addEventListener('change', () => {
   updateExample();
 });
 
+exampleMode.addEventListener('change', () => {
+  updateExplainerModeUI();
+  updateExample();
+});
+
 exampleIndex.addEventListener('input', updateExample);
+exampleRelative.addEventListener('input', updateExample);
 
 reset();
+updateExplainerModeUI();
 startExample();
 updateExample();

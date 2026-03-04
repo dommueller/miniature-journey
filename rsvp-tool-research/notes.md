@@ -28,3 +28,7 @@
   - Implemented true fixed-anchor alignment in renderer by offsetting each word using its pivot index in monospace `ch` units.
   - Updated explainer to a rolling fixed phrase where changing anchor index re-locks the stream to that index.
   - Removed previous single-word explainer approach since it did not clearly demonstrate anchor-shift perception.
+- Added explainer anchor-mode controls for better usability:
+  - New mode selector: fixed index vs relative index.
+  - Relative mode uses a 0.0-1.0 slider with step 0.1, mapping to word length.
+  - Fixed mode continues to use explicit character index, clamped by current word length.

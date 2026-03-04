@@ -49,10 +49,11 @@ This is not a universal scientific law; it is a practical implementation heurist
 The demo includes an interactive fixed-text rolling explainer:
 
 - a short phrase rotates automatically word-by-word,
-- users move an anchor-index slider,
-- each word re-aligns so that the selected character index stays on the same reticle position.
+- users can choose **fixed index** mode or **relative position** mode,
+- fixed mode uses an explicit character index, while relative mode uses a 0.0-1.0 slider (step 0.1) that maps to the word length,
+- each word re-aligns so the selected anchor stays on the same reticle position.
 
-This makes the alignment effect obvious: changing the anchor index shifts where each word "locks" visually, which changes perceived stability and eye effort.
+This makes the alignment effect obvious: changing absolute vs relative anchoring shifts where each word "locks" visually, which changes perceived stability and eye effort.
 
 ## How to run locally
 
