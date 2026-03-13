@@ -1,6 +1,6 @@
 import { serve } from "bun";
 import { join, extname } from "node:path";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 
 const root = new URL("../", import.meta.url).pathname;
 
@@ -18,9 +18,16 @@ serve({
     let path = url.pathname;
     if (path === "/") path = "/web/index.html";
     else if (path.endsWith("/")) path = `${path}index.html`;
-    const filePath = join(root, path);
+
+    let filePath = join(root, path);
 
     try {
+      const info = await stat(filePath);
+      if (info.isDirectory()) {
+        path = `${path}/index.html`;
+        filePath = join(root, path);
+      }
+
       const file = await readFile(filePath);
       const ext = extname(filePath);
       return new Response(file, {

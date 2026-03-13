@@ -38,6 +38,15 @@
       <button id="reset">Reset in WASM</button>
     </section>
 
-    <script type="module" src="./app.js"></script>
+    <script type="module">
+      const path = window.location.pathname;
+      const appPath = path.endsWith("/")
+        ? `${path}app.js`
+        : path.endsWith("/index.html")
+          ? path.replace(/index\.html$/, "app.js")
+          : `${path}/app.js`;
+
+      import(new URL(appPath, window.location.origin));
+    </script>
   </body>
 </html>

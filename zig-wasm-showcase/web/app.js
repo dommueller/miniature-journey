@@ -4,11 +4,10 @@ const incrementButton = document.getElementById("inc");
 const resetButton = document.getElementById("reset");
 
 async function loadWasm() {
-  // Adjust this path if you host the wasm somewhere else.
-  const wasmPath = "../zig-out/dist/demo.wasm";
-  const response = await fetch(wasmPath);
+  const wasmUrl = new URL("../zig-out/dist/demo.wasm", import.meta.url);
+  const response = await fetch(wasmUrl);
   if (!response.ok) {
-    throw new Error(`Failed to fetch ${wasmPath}: ${response.status}`);
+    throw new Error(`Failed to fetch ${wasmUrl}: ${response.status}`);
   }
 
   let instance;
