@@ -5,38 +5,254 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zig + WebAssembly Showcase (Try)</title>
     <style>
+      :root {
+        --bg: #f3efe5;
+        --panel: rgba(255, 252, 245, 0.95);
+        --border: #d2c5ad;
+        --text: #2f2416;
+        --muted: #6e604e;
+        --accent: #b45a34;
+        --accent-soft: #ead6c8;
+        --code-bg: #1f1d1a;
+        --code-text: #f7f0e6;
+      }
+
       body {
-        font-family: system-ui, sans-serif;
-        margin: 2rem;
-        max-width: 640px;
+        font-family: "Iowan Old Style", "Palatino Linotype", serif;
+        margin: 0;
+        padding: 2rem 1.25rem 4rem;
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.75), transparent 28rem),
+          linear-gradient(180deg, #efe4d2 0%, var(--bg) 45%, #e8ddcb 100%);
+        color: var(--text);
         line-height: 1.5;
       }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+      }
+      .hero {
+        margin-bottom: 1.5rem;
+      }
+      .eyebrow {
+        margin: 0 0 0.5rem;
+        color: var(--accent);
+        font-size: 0.85rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.1;
+      }
+      h1 {
+        font-size: clamp(2.3rem, 5vw, 4rem);
+        margin: 0 0 0.75rem;
+      }
+      .lede {
+        max-width: 48rem;
+        color: var(--muted);
+        font-size: 1.1rem;
+      }
+      .grid {
+        display: grid;
+        gap: 1rem;
+      }
+      @media (min-width: 760px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .grid .wide {
+          grid-column: 1 / -1;
+        }
+      }
       .panel {
-        border: 1px solid #d0d7de;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1.1rem 1.15rem;
+        background: var(--panel);
+        box-shadow: 0 18px 45px rgba(78, 57, 28, 0.08);
       }
       button {
         margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        border: 0;
+        border-radius: 999px;
+        padding: 0.65rem 1rem;
+        background: var(--accent);
+        color: #fff9f0;
+        font: inherit;
+      }
+      code {
+        font-family: "SFMono-Regular", "Menlo", monospace;
+        background: var(--accent-soft);
+        padding: 0.1rem 0.35rem;
+        border-radius: 0.35rem;
+      }
+      pre {
+        margin: 0;
+        padding: 1rem;
+        overflow-x: auto;
+        border-radius: 14px;
+        background: var(--code-bg);
+        color: var(--code-text);
+      }
+      pre code {
+        background: transparent;
+        padding: 0;
+        color: inherit;
+      }
+      ol,
+      ul {
+        margin: 0.75rem 0 0;
+        padding-left: 1.2rem;
+      }
+      p {
+        margin-top: 0;
+      }
+      .meta {
+        color: var(--muted);
+      }
+      .stack {
+        display: grid;
+        gap: 0.8rem;
       }
     </style>
   </head>
   <body>
-    <h1>Zig + WebAssembly (published try build)</h1>
-    <p>This page is intended for static hosting (e.g. GitHub Pages).</p>
+    <main>
+      <header class="hero">
+        <p class="eyebrow">Zig to WebAssembly</p>
+        <h1>Published Zig WASM demo</h1>
+        <p class="lede">
+          This page ships a small Zig module as <code>demo.wasm</code>, loads it with a
+          tiny JavaScript wrapper, and exposes the exported functions directly in the UI.
+        </p>
+      </header>
 
-    <section class="panel">
-      <h2>add(20, 22)</h2>
-      <p>Result: <strong id="add-result">(loading)</strong></p>
-    </section>
+      <div class="grid">
+        <section class="panel">
+          <h2>Runtime check</h2>
+          <p><strong>add(20, 22)</strong> returns <strong id="add-result">(loading)</strong>.</p>
+          <p class="meta">This value comes from the Zig-exported <code>add</code> function.</p>
+        </section>
 
-    <section class="panel">
-      <h2>Counter state in WASM module</h2>
-      <p>Current value: <strong id="counter">(loading)</strong></p>
-      <button id="inc">Increment in WASM</button>
-      <button id="reset">Reset in WASM</button>
-    </section>
+        <section class="panel">
+          <h2>Mutable WASM state</h2>
+          <p>Current counter: <strong id="counter">(loading)</strong></p>
+          <button id="inc">Increment in WASM</button>
+          <button id="reset">Reset in WASM</button>
+          <p class="meta">The counter lives inside the compiled module, not in JavaScript.</p>
+        </section>
+
+        <section class="panel wide">
+          <h2>Zig source</h2>
+          <pre><code>var counter: i32 = 0;
+
+pub export fn add(a: i32, b: i32) i32 {
+    return a + b;
+}
+
+pub export fn getCounter() i32 {
+    return counter;
+}
+
+pub export fn incrementCounter() i32 {
+    counter += 1;
+    return counter;
+}
+
+pub export fn resetCounter() void {
+    counter = 0;
+}</code></pre>
+          <p class="meta">
+            <code>export</code> tells Zig to emit the function as a symbol in the final wasm
+            module so JavaScript can access it through <code>instance.exports</code>.
+            <code>pub</code> is separate: it makes the declaration public to other Zig code.
+          </p>
+        </section>
+
+        <section class="panel">
+          <h2>Build and publish flow</h2>
+          <div class="stack">
+            <p>
+              This page is documented around one path only: build a static wasm file for
+              <code>try/</code>, publish that folder, and load <code>./demo.wasm</code> from
+              the browser.
+            </p>
+            <pre><code>const target = b.resolveTargetQuery(.{
+    .cpu_arch = .wasm32,
+    .os_tag = .freestanding,
+});
+
+const root_module = b.createModule(.{
+    .root_source_file = b.path("src/main.zig"),
+    .target = target,
+    .optimize = optimize,
+});
+
+const wasm = b.addExecutable(.{
+    .name = "demo",
+    .root_module = root_module,
+});
+
+wasm.entry = .disabled;
+wasm.rdynamic = true;
+
+const install_try = b.addInstallArtifact(wasm, .{
+    .dest_dir = .{ .override = .{ .custom = "try" } },
+});
+
+const wasm_try_step = b.step(
+    "wasm-try",
+    "Build WebAssembly artifact into zig-out/try for static publishing",
+);
+wasm_try_step.dependOn(&install_try.step);</code></pre>
+            <ol>
+              <li>Write Zig functions with <code>export fn</code> so they become visible in the final wasm module.</li>
+              <li>Target <code>wasm32-freestanding</code> to build a small module with no host OS assumptions.</li>
+              <li>Point <code>root_source_file</code> at your Zig entry source, here <code>src/main.zig</code>.</li>
+              <li>Disable the normal executable entry point with <code>wasm.entry = .disabled</code>.</li>
+              <li>Keep exported symbols visible with <code>wasm.rdynamic = true</code>.</li>
+              <li>Install the artifact into <code>zig-out/try</code> and expose it as <code>zig build wasm-try</code>.</li>
+            </ol>
+            <p class="meta">
+              That is the reproducible core. If you copy those pieces into another project,
+              you can produce a browser-loadable wasm file without additional Zig-specific tooling.
+            </p>
+            <ol>
+              <li>Create <code>src/main.zig</code> with exported functions that use simple ABI-friendly types like integers.</li>
+              <li>Add the wasm target and build step in <code>build.zig</code>.</li>
+              <li>Run <code>zig build wasm-try</code> to produce <code>zig-out/try/demo.wasm</code>.</li>
+              <li>Copy that file into your static folder as <code>try/demo.wasm</code>.</li>
+              <li>Load it from JavaScript with a relative URL based on <code>import.meta.url</code>.</li>
+              <li>Read the exported functions from <code>instance.exports</code> and wire them into the page UI.</li>
+            </ol>
+            <p class="meta">
+              In this demo, <code>bun run build:try</code> runs <code>zig build wasm-try</code>
+              and then copies <code>zig-out/try/demo.wasm</code> into <code>try/demo.wasm</code>
+              so GitHub Pages can publish a fully static folder.
+            </p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>How the page includes wasm</h2>
+          <div class="stack">
+            <p>The browser code keeps the loading path explicit and small:</p>
+            <pre><code>const wasmUrl = new URL("./demo.wasm", import.meta.url);
+const response = await fetch(wasmUrl);
+const { instance } = await WebAssembly.instantiateStreaming(response, {});
+const { add, getCounter, incrementCounter, resetCounter } = instance.exports;</code></pre>
+            <p class="meta">
+              If the server does not send <code>application/wasm</code>, the loader falls
+              back to <code>arrayBuffer()</code> plus <code>WebAssembly.instantiate()</code>.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
 
     <script type="module">
       const path = window.location.pathname;

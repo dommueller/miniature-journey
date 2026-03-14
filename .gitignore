@@ -51,6 +51,8 @@ env/
 # Zig
 zig-cache/
 zig-out/
+.zig-cache/
+.zig-global-cache/
 
 # Rust
 target/
@@ -96,3 +98,6 @@ out/
 Thumbs.db
 .Spotlight-V100
 .Trashes
+
+# Local agent work artifacts
+/research/

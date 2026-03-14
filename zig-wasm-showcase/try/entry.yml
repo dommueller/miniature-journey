@@ -1,0 +1,3 @@
+title: Zig + WebAssembly Showcase
+summary: Small Zig functions compiled to WebAssembly and loaded from a static GitHub Pages demo.
+status: published
